@@ -1,6 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
+import * as ProductsAPI from './products';
 import { APIPromise } from '../core/api-promise';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
@@ -43,6 +44,194 @@ export class Products extends APIResource {
   }
 }
 
+export interface AvailableTechnique {
+  /**
+   * The human-readable technique name
+   */
+  display_name?: string;
+
+  /**
+   * Whether the technique is the default one
+   */
+  is_default?: boolean;
+
+  /**
+   * The technique key to be used in the API
+   */
+  key?: string;
+}
+
+export interface CatalogFileOption {
+  /**
+   * File option identifier. Use this to specify which option you are adding to your
+   * file in a request.
+   */
+  id?: string;
+
+  /**
+   * Additional cost this will add to the item.
+   */
+  additional_price?: number;
+
+  title?: string;
+
+  /**
+   * The type of the value property when using this option in a request.
+   */
+  type?: string;
+}
+
+export interface FileType {
+  /**
+   * @deprecated Deprecated file type identifier. Please use type field instead!
+   */
+  id?: string;
+
+  /**
+   * Additional price when this print file type is used
+   */
+  additional_price?: string;
+
+  /**
+   * Additional options available to product files
+   */
+  options?: Array<CatalogFileOption>;
+
+  /**
+   * Display name
+   */
+  title?: string;
+
+  /**
+   * File type identifier - use this to specify a file's purpose when creating an
+   * order
+   */
+  type?: string;
+}
+
+export interface OptionType {
+  /**
+   * Option identifier - use this to specify the option when creating an order
+   */
+  id?: string;
+
+  /**
+   * Additional price when this option is used
+   */
+  additional_price?: string;
+
+  /**
+   * Additional price breakdown by type - [key, value] map
+   */
+  additional_price_breakdown?: { [key: string]: unknown };
+
+  /**
+   * Display name
+   */
+  title?: string;
+
+  /**
+   * Data type of this option (currently only 'bool' is supported)
+   */
+  type?: string;
+
+  /**
+   * Possible option values - [key, value] map
+   */
+  values?: { [key: string]: unknown };
+}
+
+/**
+ * Information about the Product that the Variant belongs to
+ */
+export interface Product {
+  /**
+   * Product ID
+   */
+  id?: number;
+
+  /**
+   * Average number of days for order to be fulfilled
+   */
+  avg_fulfillment_time?: number;
+
+  /**
+   * Brand name
+   */
+  brand?: string;
+
+  /**
+   * Currency in which prices are returned
+   */
+  currency?: string;
+
+  /**
+   * Product description
+   */
+  description?: string;
+
+  /**
+   * Definitions of Print/Mockup file categories that can be attached to this product
+   */
+  files?: Array<FileType>;
+
+  /**
+   * URL of a sample image for this product
+   */
+  image?: string;
+
+  /**
+   * If product is disabled in push
+   */
+  is_discontinued?: boolean;
+
+  /**
+   * Main category of product
+   */
+  main_category_id?: number;
+
+  /**
+   * Model name
+   */
+  model?: string;
+
+  /**
+   * Definitions of additional options that are available for this product
+   * [See examples](#tag/Common/Options)
+   */
+  options?: Array<OptionType>;
+
+  /**
+   * The origin country for inside label
+   */
+  origin_country?: string | null;
+
+  /**
+   * Available techniques
+   */
+  techniques?: Array<AvailableTechnique>;
+
+  /**
+   * Product title
+   */
+  title?: string;
+
+  /**
+   * Product type identifier
+   */
+  type?: string;
+
+  /**
+   * Product type name
+   */
+  type_name?: string;
+
+  /**
+   * Number of available variants for this product
+   */
+  variant_count?: number;
+}
+
 export interface ProductRetrieveResponse {
   /**
    * Response status code `200`
@@ -57,204 +246,12 @@ export namespace ProductRetrieveResponse {
     /**
      * Information about the Product that the Variant belongs to
      */
-    product?: Result.Product;
+    product?: ProductsAPI.Product;
 
     variants?: Array<Result.Variant>;
   }
 
   export namespace Result {
-    /**
-     * Information about the Product that the Variant belongs to
-     */
-    export interface Product {
-      /**
-       * Product ID
-       */
-      id?: number;
-
-      /**
-       * Average number of days for order to be fulfilled
-       */
-      avg_fulfillment_time?: number;
-
-      /**
-       * Brand name
-       */
-      brand?: string;
-
-      /**
-       * Currency in which prices are returned
-       */
-      currency?: string;
-
-      /**
-       * Product description
-       */
-      description?: string;
-
-      /**
-       * Definitions of Print/Mockup file categories that can be attached to this product
-       */
-      files?: Array<Product.File>;
-
-      /**
-       * URL of a sample image for this product
-       */
-      image?: string;
-
-      /**
-       * If product is disabled in push
-       */
-      is_discontinued?: boolean;
-
-      /**
-       * Main category of product
-       */
-      main_category_id?: number;
-
-      /**
-       * Model name
-       */
-      model?: string;
-
-      /**
-       * Definitions of additional options that are available for this product
-       * [See examples](#tag/Common/Options)
-       */
-      options?: Array<Product.Option>;
-
-      /**
-       * The origin country for inside label
-       */
-      origin_country?: string | null;
-
-      /**
-       * Available techniques
-       */
-      techniques?: Array<Product.Technique>;
-
-      /**
-       * Product title
-       */
-      title?: string;
-
-      /**
-       * Product type identifier
-       */
-      type?: string;
-
-      /**
-       * Product type name
-       */
-      type_name?: string;
-
-      /**
-       * Number of available variants for this product
-       */
-      variant_count?: number;
-    }
-
-    export namespace Product {
-      export interface File {
-        /**
-         * @deprecated Deprecated file type identifier. Please use type field instead!
-         */
-        id?: string;
-
-        /**
-         * Additional price when this print file type is used
-         */
-        additional_price?: string;
-
-        /**
-         * Additional options available to product files
-         */
-        options?: Array<File.Option>;
-
-        /**
-         * Display name
-         */
-        title?: string;
-
-        /**
-         * File type identifier - use this to specify a file's purpose when creating an
-         * order
-         */
-        type?: string;
-      }
-
-      export namespace File {
-        export interface Option {
-          /**
-           * File option identifier. Use this to specify which option you are adding to your
-           * file in a request.
-           */
-          id?: string;
-
-          /**
-           * Additional cost this will add to the item.
-           */
-          additional_price?: number;
-
-          title?: string;
-
-          /**
-           * The type of the value property when using this option in a request.
-           */
-          type?: string;
-        }
-      }
-
-      export interface Option {
-        /**
-         * Option identifier - use this to specify the option when creating an order
-         */
-        id?: string;
-
-        /**
-         * Additional price when this option is used
-         */
-        additional_price?: string;
-
-        /**
-         * Additional price breakdown by type - [key, value] map
-         */
-        additional_price_breakdown?: { [key: string]: unknown };
-
-        /**
-         * Display name
-         */
-        title?: string;
-
-        /**
-         * Data type of this option (currently only 'bool' is supported)
-         */
-        type?: string;
-
-        /**
-         * Possible option values - [key, value] map
-         */
-        values?: { [key: string]: unknown };
-      }
-
-      export interface Technique {
-        /**
-         * The human-readable technique name
-         */
-        display_name?: string;
-
-        /**
-         * Whether the technique is the default one
-         */
-        is_default?: boolean;
-
-        /**
-         * The technique key to be used in the API
-         */
-        key?: string;
-      }
-    }
-
     export interface Variant {
       /**
        * Variant ID, use this to specify the product when creating orders
@@ -360,201 +357,7 @@ export interface ProductListResponse {
    */
   code?: number;
 
-  result?: Array<ProductListResponse.Result>;
-}
-
-export namespace ProductListResponse {
-  /**
-   * Information about the Product that the Variant belongs to
-   */
-  export interface Result {
-    /**
-     * Product ID
-     */
-    id?: number;
-
-    /**
-     * Average number of days for order to be fulfilled
-     */
-    avg_fulfillment_time?: number;
-
-    /**
-     * Brand name
-     */
-    brand?: string;
-
-    /**
-     * Currency in which prices are returned
-     */
-    currency?: string;
-
-    /**
-     * Product description
-     */
-    description?: string;
-
-    /**
-     * Definitions of Print/Mockup file categories that can be attached to this product
-     */
-    files?: Array<Result.File>;
-
-    /**
-     * URL of a sample image for this product
-     */
-    image?: string;
-
-    /**
-     * If product is disabled in push
-     */
-    is_discontinued?: boolean;
-
-    /**
-     * Main category of product
-     */
-    main_category_id?: number;
-
-    /**
-     * Model name
-     */
-    model?: string;
-
-    /**
-     * Definitions of additional options that are available for this product
-     * [See examples](#tag/Common/Options)
-     */
-    options?: Array<Result.Option>;
-
-    /**
-     * The origin country for inside label
-     */
-    origin_country?: string | null;
-
-    /**
-     * Available techniques
-     */
-    techniques?: Array<Result.Technique>;
-
-    /**
-     * Product title
-     */
-    title?: string;
-
-    /**
-     * Product type identifier
-     */
-    type?: string;
-
-    /**
-     * Product type name
-     */
-    type_name?: string;
-
-    /**
-     * Number of available variants for this product
-     */
-    variant_count?: number;
-  }
-
-  export namespace Result {
-    export interface File {
-      /**
-       * @deprecated Deprecated file type identifier. Please use type field instead!
-       */
-      id?: string;
-
-      /**
-       * Additional price when this print file type is used
-       */
-      additional_price?: string;
-
-      /**
-       * Additional options available to product files
-       */
-      options?: Array<File.Option>;
-
-      /**
-       * Display name
-       */
-      title?: string;
-
-      /**
-       * File type identifier - use this to specify a file's purpose when creating an
-       * order
-       */
-      type?: string;
-    }
-
-    export namespace File {
-      export interface Option {
-        /**
-         * File option identifier. Use this to specify which option you are adding to your
-         * file in a request.
-         */
-        id?: string;
-
-        /**
-         * Additional cost this will add to the item.
-         */
-        additional_price?: number;
-
-        title?: string;
-
-        /**
-         * The type of the value property when using this option in a request.
-         */
-        type?: string;
-      }
-    }
-
-    export interface Option {
-      /**
-       * Option identifier - use this to specify the option when creating an order
-       */
-      id?: string;
-
-      /**
-       * Additional price when this option is used
-       */
-      additional_price?: string;
-
-      /**
-       * Additional price breakdown by type - [key, value] map
-       */
-      additional_price_breakdown?: { [key: string]: unknown };
-
-      /**
-       * Display name
-       */
-      title?: string;
-
-      /**
-       * Data type of this option (currently only 'bool' is supported)
-       */
-      type?: string;
-
-      /**
-       * Possible option values - [key, value] map
-       */
-      values?: { [key: string]: unknown };
-    }
-
-    export interface Technique {
-      /**
-       * The human-readable technique name
-       */
-      display_name?: string;
-
-      /**
-       * Whether the technique is the default one
-       */
-      is_default?: boolean;
-
-      /**
-       * The technique key to be used in the API
-       */
-      key?: string;
-    }
-  }
+  result?: Array<Product>;
 }
 
 export interface ProductRetrieveSizeGuideResponse {
@@ -694,204 +497,12 @@ export namespace ProductRetrieveVariantResponse {
     /**
      * Information about the Product that the Variant belongs to
      */
-    product?: Result.Product;
+    product?: ProductsAPI.Product;
 
     variant?: Result.Variant;
   }
 
   export namespace Result {
-    /**
-     * Information about the Product that the Variant belongs to
-     */
-    export interface Product {
-      /**
-       * Product ID
-       */
-      id?: number;
-
-      /**
-       * Average number of days for order to be fulfilled
-       */
-      avg_fulfillment_time?: number;
-
-      /**
-       * Brand name
-       */
-      brand?: string;
-
-      /**
-       * Currency in which prices are returned
-       */
-      currency?: string;
-
-      /**
-       * Product description
-       */
-      description?: string;
-
-      /**
-       * Definitions of Print/Mockup file categories that can be attached to this product
-       */
-      files?: Array<Product.File>;
-
-      /**
-       * URL of a sample image for this product
-       */
-      image?: string;
-
-      /**
-       * If product is disabled in push
-       */
-      is_discontinued?: boolean;
-
-      /**
-       * Main category of product
-       */
-      main_category_id?: number;
-
-      /**
-       * Model name
-       */
-      model?: string;
-
-      /**
-       * Definitions of additional options that are available for this product
-       * [See examples](#tag/Common/Options)
-       */
-      options?: Array<Product.Option>;
-
-      /**
-       * The origin country for inside label
-       */
-      origin_country?: string | null;
-
-      /**
-       * Available techniques
-       */
-      techniques?: Array<Product.Technique>;
-
-      /**
-       * Product title
-       */
-      title?: string;
-
-      /**
-       * Product type identifier
-       */
-      type?: string;
-
-      /**
-       * Product type name
-       */
-      type_name?: string;
-
-      /**
-       * Number of available variants for this product
-       */
-      variant_count?: number;
-    }
-
-    export namespace Product {
-      export interface File {
-        /**
-         * @deprecated Deprecated file type identifier. Please use type field instead!
-         */
-        id?: string;
-
-        /**
-         * Additional price when this print file type is used
-         */
-        additional_price?: string;
-
-        /**
-         * Additional options available to product files
-         */
-        options?: Array<File.Option>;
-
-        /**
-         * Display name
-         */
-        title?: string;
-
-        /**
-         * File type identifier - use this to specify a file's purpose when creating an
-         * order
-         */
-        type?: string;
-      }
-
-      export namespace File {
-        export interface Option {
-          /**
-           * File option identifier. Use this to specify which option you are adding to your
-           * file in a request.
-           */
-          id?: string;
-
-          /**
-           * Additional cost this will add to the item.
-           */
-          additional_price?: number;
-
-          title?: string;
-
-          /**
-           * The type of the value property when using this option in a request.
-           */
-          type?: string;
-        }
-      }
-
-      export interface Option {
-        /**
-         * Option identifier - use this to specify the option when creating an order
-         */
-        id?: string;
-
-        /**
-         * Additional price when this option is used
-         */
-        additional_price?: string;
-
-        /**
-         * Additional price breakdown by type - [key, value] map
-         */
-        additional_price_breakdown?: { [key: string]: unknown };
-
-        /**
-         * Display name
-         */
-        title?: string;
-
-        /**
-         * Data type of this option (currently only 'bool' is supported)
-         */
-        type?: string;
-
-        /**
-         * Possible option values - [key, value] map
-         */
-        values?: { [key: string]: unknown };
-      }
-
-      export interface Technique {
-        /**
-         * The human-readable technique name
-         */
-        display_name?: string;
-
-        /**
-         * Whether the technique is the default one
-         */
-        is_default?: boolean;
-
-        /**
-         * The technique key to be used in the API
-         */
-        key?: string;
-      }
-    }
-
     export interface Variant {
       /**
        * Variant ID, use this to specify the product when creating orders
@@ -1010,6 +621,11 @@ export interface ProductRetrieveSizeGuideParams {
 
 export declare namespace Products {
   export {
+    type AvailableTechnique as AvailableTechnique,
+    type CatalogFileOption as CatalogFileOption,
+    type FileType as FileType,
+    type OptionType as OptionType,
+    type Product as Product,
     type ProductRetrieveResponse as ProductRetrieveResponse,
     type ProductListResponse as ProductListResponse,
     type ProductRetrieveSizeGuideResponse as ProductRetrieveSizeGuideResponse,

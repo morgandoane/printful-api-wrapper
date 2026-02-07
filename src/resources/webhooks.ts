@@ -87,29 +87,27 @@ export class Webhooks extends APIResource {
   }
 }
 
+export interface WebhookInfo {
+  params?: { [key: string]: unknown };
+
+  /**
+   * Array of enabled webhook event types
+   */
+  types?: Array<string>;
+
+  /**
+   * Webhook URL that will receive store's event notifications
+   */
+  url?: string;
+}
+
 export interface WebhookCreateResponse {
   /**
    * Response status code `200`
    */
   code?: number;
 
-  result?: WebhookCreateResponse.Result;
-}
-
-export namespace WebhookCreateResponse {
-  export interface Result {
-    params?: { [key: string]: unknown };
-
-    /**
-     * Array of enabled webhook event types
-     */
-    types?: Array<string>;
-
-    /**
-     * Webhook URL that will receive store's event notifications
-     */
-    url?: string;
-  }
+  result?: WebhookInfo;
 }
 
 export interface WebhookRetrieveResponse {
@@ -118,23 +116,7 @@ export interface WebhookRetrieveResponse {
    */
   code?: number;
 
-  result?: WebhookRetrieveResponse.Result;
-}
-
-export namespace WebhookRetrieveResponse {
-  export interface Result {
-    params?: { [key: string]: unknown };
-
-    /**
-     * Array of enabled webhook event types
-     */
-    types?: Array<string>;
-
-    /**
-     * Webhook URL that will receive store's event notifications
-     */
-    url?: string;
-  }
+  result?: WebhookInfo;
 }
 
 export interface WebhookDeleteResponse {
@@ -143,23 +125,7 @@ export interface WebhookDeleteResponse {
    */
   code?: number;
 
-  result?: WebhookDeleteResponse.Result;
-}
-
-export namespace WebhookDeleteResponse {
-  export interface Result {
-    params?: { [key: string]: unknown };
-
-    /**
-     * Array of enabled webhook event types
-     */
-    types?: Array<string>;
-
-    /**
-     * Webhook URL that will receive store's event notifications
-     */
-    url?: string;
-  }
+  result?: WebhookInfo;
 }
 
 export interface WebhookCreateParams {
@@ -215,6 +181,7 @@ export interface WebhookDeleteParams {
 
 export declare namespace Webhooks {
   export {
+    type WebhookInfo as WebhookInfo,
     type WebhookCreateResponse as WebhookCreateResponse,
     type WebhookRetrieveResponse as WebhookRetrieveResponse,
     type WebhookDeleteResponse as WebhookDeleteResponse,

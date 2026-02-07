@@ -1,6 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
+import * as Shared from './shared';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
@@ -699,7 +700,7 @@ export namespace MockupGeneratorCreateTaskParams {
     /**
      * Array of additional options for this file [See examples](#tag/Common/Options)
      */
-    options?: Array<File.Option>;
+    options?: Array<Shared.FileOption>;
 
     /**
      * Placement identifier (front, back, etc.).
@@ -713,21 +714,6 @@ export namespace MockupGeneratorCreateTaskParams {
   }
 
   export namespace File {
-    /**
-     * File option
-     */
-    export interface Option {
-      /**
-       * Option id
-       */
-      id: string;
-
-      /**
-       * Option value
-       */
-      value: string;
-    }
-
     /**
      * Position
      */

@@ -1,7 +1,25 @@
+# Shared
+
+Types:
+
+- <code><a href="./src/resources/shared.ts">File</a></code>
+- <code><a href="./src/resources/shared.ts">FileOption</a></code>
+- <code><a href="./src/resources/shared.ts">ItemOption</a></code>
+- <code><a href="./src/resources/shared.ts">PackingSlip</a></code>
+- <code><a href="./src/resources/shared.ts">Paging</a></code>
+- <code><a href="./src/resources/shared.ts">ProductVariant</a></code>
+- <code><a href="./src/resources/shared.ts">SyncProduct</a></code>
+- <code><a href="./src/resources/shared.ts">SyncVariant</a></code>
+
 # Products
 
 Types:
 
+- <code><a href="./src/resources/products.ts">AvailableTechnique</a></code>
+- <code><a href="./src/resources/products.ts">CatalogFileOption</a></code>
+- <code><a href="./src/resources/products.ts">FileType</a></code>
+- <code><a href="./src/resources/products.ts">OptionType</a></code>
+- <code><a href="./src/resources/products.ts">Product</a></code>
 - <code><a href="./src/resources/products.ts">ProductRetrieveResponse</a></code>
 - <code><a href="./src/resources/products.ts">ProductListResponse</a></code>
 - <code><a href="./src/resources/products.ts">ProductRetrieveSizeGuideResponse</a></code>
@@ -44,6 +62,17 @@ Methods:
 
 Types:
 
+- <code><a href="./src/resources/orders.ts">Address</a></code>
+- <code><a href="./src/resources/orders.ts">Costs</a></code>
+- <code><a href="./src/resources/orders.ts">Gift</a></code>
+- <code><a href="./src/resources/orders.ts">IncompleteItem</a></code>
+- <code><a href="./src/resources/orders.ts">Item</a></code>
+- <code><a href="./src/resources/orders.ts">Option</a></code>
+- <code><a href="./src/resources/orders.ts">Order</a></code>
+- <code><a href="./src/resources/orders.ts">OrderShipmentItem</a></code>
+- <code><a href="./src/resources/orders.ts">PricingBreakdown</a></code>
+- <code><a href="./src/resources/orders.ts">RetailCosts</a></code>
+- <code><a href="./src/resources/orders.ts">Shipment</a></code>
 - <code><a href="./src/resources/orders.ts">OrderCreateResponse</a></code>
 - <code><a href="./src/resources/orders.ts">OrderRetrieveResponse</a></code>
 - <code><a href="./src/resources/orders.ts">OrderUpdateResponse</a></code>
@@ -186,6 +215,7 @@ Methods:
 
 Types:
 
+- <code><a href="./src/resources/webhooks.ts">WebhookInfo</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookCreateResponse</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookRetrieveResponse</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookDeleteResponse</a></code>

@@ -1,5 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
+export * from './shared';
 export {
   ApprovalSheets,
   type ApprovalSheetListResponse,
@@ -34,6 +35,17 @@ export {
 export { OAuth, type OAuthListScopesResponse } from './oauth';
 export {
   Orders,
+  type Address,
+  type Costs,
+  type Gift,
+  type IncompleteItem,
+  type Item,
+  type Option,
+  type Order,
+  type OrderShipmentItem,
+  type PricingBreakdown,
+  type RetailCosts,
+  type Shipment,
   type OrderCreateResponse,
   type OrderRetrieveResponse,
   type OrderUpdateResponse,
@@ -58,6 +70,11 @@ export {
 } from './product-templates';
 export {
   Products,
+  type AvailableTechnique,
+  type CatalogFileOption,
+  type FileType,
+  type OptionType,
+  type Product,
   type ProductRetrieveResponse,
   type ProductListResponse,
   type ProductRetrieveSizeGuideResponse,
@@ -88,6 +105,7 @@ export {
 export { Warehouse } from './warehouse/warehouse';
 export {
   Webhooks,
+  type WebhookInfo,
   type WebhookCreateResponse,
   type WebhookRetrieveResponse,
   type WebhookDeleteResponse,

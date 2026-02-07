@@ -1,6 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
+import * as Shared from './shared';
 import { APIPromise } from '../core/api-promise';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
@@ -123,7 +124,7 @@ export interface ProductTemplateListResponse {
   /**
    * Paging information
    */
-  paging?: ProductTemplateListResponse.Paging;
+  paging?: Shared.Paging;
 
   /**
    * Information about the template
@@ -132,26 +133,6 @@ export interface ProductTemplateListResponse {
 }
 
 export namespace ProductTemplateListResponse {
-  /**
-   * Paging information
-   */
-  export interface Paging {
-    /**
-     * Max number of items per page
-     */
-    limit: number;
-
-    /**
-     * Current result set page offset
-     */
-    offset: number;
-
-    /**
-     * Total number of items available
-     */
-    total: number;
-  }
-
   /**
    * Information about the template
    */
