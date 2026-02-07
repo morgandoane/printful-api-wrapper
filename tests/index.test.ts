@@ -1,10 +1,10 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { APIPromise } from 'printful/core/api-promise';
+import { APIPromise } from 'printful-client/core/api-promise';
 
 import util from 'node:util';
-import Printful from 'printful';
-import { APIUserAbortError } from 'printful';
+import Printful from 'printful-client';
+import { APIUserAbortError } from 'printful-client';
 const defaultFetch = fetch;
 
 describe('instantiate client', () => {

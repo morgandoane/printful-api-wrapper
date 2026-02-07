@@ -1,5 +1,5 @@
-import { multipartFormRequestOptions, createForm } from 'printful/internal/uploads';
-import { toFile } from 'printful/core/uploads';
+import { multipartFormRequestOptions, createForm } from 'printful-client/internal/uploads';
+import { toFile } from 'printful-client/core/uploads';
 
 describe('form data validation', () => {
   test('valid values do not error', async () => {
