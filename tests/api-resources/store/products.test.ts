@@ -36,6 +36,8 @@ describe('resource products', () => {
       },
       sync_variants: [
         {
+          availability_status: 'active',
+          external_id: '12312414',
           files: [
             {
               url: '​https://www.example.com/files/tshirts/example.png',
@@ -45,13 +47,11 @@ describe('resource products', () => {
               visible: true,
             },
           ],
-          variant_id: 3001,
-          availability_status: 'active',
-          external_id: '12312414',
           is_ignored: true,
           options: [{ id: 'embroidery_type', value: 'flat' }],
           retail_price: '29.99',
           sku: 'SKU1234',
+          variant_id: 3001,
         },
       ],
       'X-PF-Store-Id': 'X-PF-Store-Id',

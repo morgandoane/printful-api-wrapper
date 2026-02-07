@@ -1,6 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
+import * as Shared from './shared';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
@@ -89,121 +90,7 @@ export interface FileCreateResponse {
   /**
    * Information about the File
    */
-  result?: FileCreateResponse.Result;
-}
-
-export namespace FileCreateResponse {
-  /**
-   * Information about the File
-   */
-  export interface Result {
-    /**
-     * Source URL where the file is downloaded from. The use of .ai .psd and .tiff
-     * files have been depreciated, if your application uses these file types or
-     * accepts these types from users you will need to add validation.
-     */
-    url: string;
-
-    /**
-     * File ID
-     */
-    id?: number;
-
-    /**
-     * File creation timestamp
-     */
-    created?: number;
-
-    /**
-     * Resolution DPI. **Note:** for vector files this may be indicated as only 72dpi,
-     * but it doesn't affect print quality since the vector files are resolution
-     * independent.
-     */
-    dpi?: number;
-
-    /**
-     * File name
-     */
-    filename?: string;
-
-    /**
-     * MD5 checksum of the file
-     */
-    hash?: string;
-
-    /**
-     * Height in pixels
-     */
-    height?: number;
-
-    /**
-     * Whether it is a temporary printfile.
-     */
-    is_temporary?: boolean;
-
-    /**
-     * MIME type of the file
-     */
-    mime_type?: string;
-
-    /**
-     * Array of additional options for this file [See examples](#tag/Common/Options)
-     */
-    options?: Array<Result.Option>;
-
-    /**
-     * Medium preview image URL
-     */
-    preview_url?: string;
-
-    /**
-     * Size in bytes
-     */
-    size?: number;
-
-    /**
-     * File processing status: **ok** - file was processed successfuly **waiting** -
-     * file is being processed **failed** - file failed to be processed
-     */
-    status?: string;
-
-    /**
-     * Small thumbnail URL
-     */
-    thumbnail_url?: string;
-
-    /**
-     * Role of the file
-     */
-    type?: string;
-
-    /**
-     * Show file in the Printfile Library (default true)
-     */
-    visible?: boolean;
-
-    /**
-     * Width in pixels
-     */
-    width?: number;
-  }
-
-  export namespace Result {
-    /**
-     * File option
-     */
-    export interface Option {
-      /**
-       * Option id
-       */
-      id: string;
-
-      /**
-       * Option value
-       */
-      value: string;
-    }
-  }
+  result?: Shared.File;
 }
 
 export interface FileRetrieveResponse {
@@ -215,121 +102,7 @@ export interface FileRetrieveResponse {
   /**
    * Information about the File
    */
-  result?: FileRetrieveResponse.Result;
-}
-
-export namespace FileRetrieveResponse {
-  /**
-   * Information about the File
-   */
-  export interface Result {
-    /**
-     * Source URL where the file is downloaded from. The use of .ai .psd and .tiff
-     * files have been depreciated, if your application uses these file types or
-     * accepts these types from users you will need to add validation.
-     */
-    url: string;
-
-    /**
-     * File ID
-     */
-    id?: number;
-
-    /**
-     * File creation timestamp
-     */
-    created?: number;
-
-    /**
-     * Resolution DPI. **Note:** for vector files this may be indicated as only 72dpi,
-     * but it doesn't affect print quality since the vector files are resolution
-     * independent.
-     */
-    dpi?: number;
-
-    /**
-     * File name
-     */
-    filename?: string;
-
-    /**
-     * MD5 checksum of the file
-     */
-    hash?: string;
-
-    /**
-     * Height in pixels
-     */
-    height?: number;
-
-    /**
-     * Whether it is a temporary printfile.
-     */
-    is_temporary?: boolean;
-
-    /**
-     * MIME type of the file
-     */
-    mime_type?: string;
-
-    /**
-     * Array of additional options for this file [See examples](#tag/Common/Options)
-     */
-    options?: Array<Result.Option>;
-
-    /**
-     * Medium preview image URL
-     */
-    preview_url?: string;
-
-    /**
-     * Size in bytes
-     */
-    size?: number;
-
-    /**
-     * File processing status: **ok** - file was processed successfuly **waiting** -
-     * file is being processed **failed** - file failed to be processed
-     */
-    status?: string;
-
-    /**
-     * Small thumbnail URL
-     */
-    thumbnail_url?: string;
-
-    /**
-     * Role of the file
-     */
-    type?: string;
-
-    /**
-     * Show file in the Printfile Library (default true)
-     */
-    visible?: boolean;
-
-    /**
-     * Width in pixels
-     */
-    width?: number;
-  }
-
-  export namespace Result {
-    /**
-     * File option
-     */
-    export interface Option {
-      /**
-       * Option id
-       */
-      id: string;
-
-      /**
-       * Option value
-       */
-      value: string;
-    }
-  }
+  result?: Shared.File;
 }
 
 export interface FileGetThreadColorsResponse {
@@ -358,7 +131,7 @@ export interface FileCreateParams {
    * Body param: Array of additional options for this file
    * [See examples](#tag/Common/Options)
    */
-  options?: Array<FileCreateParams.Option>;
+  options?: Array<Shared.FileOption>;
 
   /**
    * Body param: Role of the file
@@ -379,23 +152,6 @@ export interface FileCreateParams {
    * endpoint.
    */
   'X-PF-Store-Id'?: string;
-}
-
-export namespace FileCreateParams {
-  /**
-   * File option
-   */
-  export interface Option {
-    /**
-     * Option id
-     */
-    id: string;
-
-    /**
-     * Option value
-     */
-    value: string;
-  }
 }
 
 export interface FileRetrieveParams {

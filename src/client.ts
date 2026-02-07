@@ -49,6 +49,13 @@ import {
 } from './resources/mockup-generator';
 import { OAuth, OAuthListScopesResponse } from './resources/oauth';
 import {
+  Address,
+  Costs,
+  Gift,
+  IncompleteItem,
+  Item,
+  Option,
+  Order,
   OrderCancelParams,
   OrderCancelResponse,
   OrderConfirmParams,
@@ -61,9 +68,13 @@ import {
   OrderListResponse,
   OrderRetrieveParams,
   OrderRetrieveResponse,
+  OrderShipmentItem,
   OrderUpdateParams,
   OrderUpdateResponse,
   Orders,
+  PricingBreakdown,
+  RetailCosts,
+  Shipment,
 } from './resources/orders';
 import {
   ProductTemplateDeleteResponse,
@@ -73,6 +84,11 @@ import {
   ProductTemplates,
 } from './resources/product-templates';
 import {
+  AvailableTechnique,
+  CatalogFileOption,
+  FileType,
+  OptionType,
+  Product,
   ProductListParams,
   ProductListResponse,
   ProductRetrieveResponse,
@@ -98,6 +114,7 @@ import {
   WebhookCreateResponse,
   WebhookDeleteParams,
   WebhookDeleteResponse,
+  WebhookInfo,
   WebhookRetrieveParams,
   WebhookRetrieveResponse,
   Webhooks,
@@ -868,6 +885,11 @@ export declare namespace Printful {
 
   export {
     Products as Products,
+    type AvailableTechnique as AvailableTechnique,
+    type CatalogFileOption as CatalogFileOption,
+    type FileType as FileType,
+    type OptionType as OptionType,
+    type Product as Product,
     type ProductRetrieveResponse as ProductRetrieveResponse,
     type ProductListResponse as ProductListResponse,
     type ProductRetrieveSizeGuideResponse as ProductRetrieveSizeGuideResponse,
@@ -892,6 +914,17 @@ export declare namespace Printful {
 
   export {
     Orders as Orders,
+    type Address as Address,
+    type Costs as Costs,
+    type Gift as Gift,
+    type IncompleteItem as IncompleteItem,
+    type Item as Item,
+    type Option as Option,
+    type Order as Order,
+    type OrderShipmentItem as OrderShipmentItem,
+    type PricingBreakdown as PricingBreakdown,
+    type RetailCosts as RetailCosts,
+    type Shipment as Shipment,
     type OrderCreateResponse as OrderCreateResponse,
     type OrderRetrieveResponse as OrderRetrieveResponse,
     type OrderUpdateResponse as OrderUpdateResponse,
@@ -961,6 +994,7 @@ export declare namespace Printful {
 
   export {
     Webhooks as Webhooks,
+    type WebhookInfo as WebhookInfo,
     type WebhookCreateResponse as WebhookCreateResponse,
     type WebhookRetrieveResponse as WebhookRetrieveResponse,
     type WebhookDeleteResponse as WebhookDeleteResponse,
@@ -984,4 +1018,13 @@ export declare namespace Printful {
     type StoreUpdatePackingSlipResponse as StoreUpdatePackingSlipResponse,
     type StoreUpdatePackingSlipParams as StoreUpdatePackingSlipParams,
   };
+
+  export type File = API.File;
+  export type FileOption = API.FileOption;
+  export type ItemOption = API.ItemOption;
+  export type PackingSlip = API.PackingSlip;
+  export type Paging = API.Paging;
+  export type ProductVariant = API.ProductVariant;
+  export type SyncProduct = API.SyncProduct;
+  export type SyncVariant = API.SyncVariant;
 }

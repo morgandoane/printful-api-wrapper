@@ -1,6 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
+import * as Shared from '../shared';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
@@ -215,7 +216,7 @@ export interface ProductListResponse {
   /**
    * Paging information
    */
-  paging?: ProductListResponse.Paging;
+  paging?: Shared.Paging;
 
   /**
    * Array of WarehouseProducts
@@ -224,26 +225,6 @@ export interface ProductListResponse {
 }
 
 export namespace ProductListResponse {
-  /**
-   * Paging information
-   */
-  export interface Paging {
-    /**
-     * Max number of items per page
-     */
-    limit: number;
-
-    /**
-     * Current result set page offset
-     */
-    offset: number;
-
-    /**
-     * Total number of items available
-     */
-    total: number;
-  }
-
   /**
    * Warehouse product data
    */

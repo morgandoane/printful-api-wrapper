@@ -1,6 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
+import * as Shared from '../shared';
 import * as ProductsAPI from './products';
 import {
   ProductCreateParams,
@@ -122,32 +123,12 @@ export interface StoreListResponse {
   /**
    * Paging information
    */
-  paging?: StoreListResponse.Paging;
+  paging?: Shared.Paging;
 
   result?: Array<StoreListResponse.Result>;
 }
 
 export namespace StoreListResponse {
-  /**
-   * Paging information
-   */
-  export interface Paging {
-    /**
-     * Max number of items per page
-     */
-    limit: number;
-
-    /**
-     * Current result set page offset
-     */
-    offset: number;
-
-    /**
-     * Total number of items available
-     */
-    total: number;
-  }
-
   export interface Result {
     /**
      * Store ID
@@ -181,46 +162,7 @@ export namespace StoreUpdatePackingSlipResponse {
      * Custom packing slip for this order. Example of a packing slip with explained
      * fields can be found [here](#packing-slip).
      */
-    packing_slip?: Result.PackingSlip;
-  }
-
-  export namespace Result {
-    /**
-     * Custom packing slip for this order. Example of a packing slip with explained
-     * fields can be found [here](#packing-slip).
-     */
-    export interface PackingSlip {
-      /**
-       * Your own Order ID that will be printed instead of Printful's Order ID
-       */
-      custom_order_id?: string;
-
-      /**
-       * Customer service email
-       */
-      email?: string;
-
-      /**
-       * URL address to a sticker we will put on a package. The provided image is
-       * converted to grayscale/1-bit monochrome image.
-       */
-      logo_url?: string;
-
-      /**
-       * Custom packing slip message
-       */
-      message?: string;
-
-      /**
-       * Customer service phone
-       */
-      phone?: string;
-
-      /**
-       * Store name override for the return address
-       */
-      store_name?: string;
-    }
+    packing_slip?: Shared.PackingSlip;
   }
 }
 
