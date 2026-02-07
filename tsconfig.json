@@ -8,8 +8,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "paths": {
-      "printful/*": ["./src/*"],
-      "printful": ["./src/index.ts"]
+      "printful-client/*": ["./src/*"],
+      "printful-client": ["./src/index.ts"]
     },
     "noEmit": true,
 
