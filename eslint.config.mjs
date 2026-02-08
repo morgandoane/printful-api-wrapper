@@ -25,7 +25,7 @@ export default tseslint.config(
         {
           patterns: [
             {
-              regex: '^printful-api-client(/.*)?',
+              regex: '^mdd-printful-client(/.*)?',
               message: 'Use a relative import, not a package import.',
             },
           ],
