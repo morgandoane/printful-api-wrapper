@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { Printful } from 'printful-client';
+import { Printful } from 'printful-api-client';
 
 const { stringifyQuery } = Printful.prototype as any;
 
