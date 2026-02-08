@@ -5,8 +5,8 @@
   "compilerOptions": {
     "rootDir": "./dist/src",
     "paths": {
-      "printful-client/*": ["./dist/src/*"],
-      "printful-client": ["./dist/src/index.ts"]
+      "printful-api-client/*": ["./dist/src/*"],
+      "printful-api-client": ["./dist/src/index.ts"]
     },
     "noEmit": false,
     "declaration": true,

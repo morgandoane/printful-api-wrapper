@@ -55,12 +55,12 @@ $ cd printful-client
 # With yarn
 $ yarn link
 $ cd ../my-package
-$ yarn link printful-client
+$ yarn link printful-api-client
 
 # With pnpm
 $ pnpm link --global
 $ cd ../my-package
-$ pnpm link -—global printful-client
+$ pnpm link -—global printful-api-client
 ```
 
 ## Running tests

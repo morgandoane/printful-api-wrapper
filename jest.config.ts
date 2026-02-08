@@ -7,8 +7,8 @@ const config: JestConfigWithTsJest = {
     '^.+\\.(t|j)sx?$': ['@swc/jest', { sourceMaps: 'inline' }],
   },
   moduleNameMapper: {
-    '^printful-client$': '<rootDir>/src/index.ts',
-    '^printful-client/(.*)$': '<rootDir>/src/$1',
+    '^printful-api-client$': '<rootDir>/src/index.ts',
+    '^printful-api-client/(.*)$': '<rootDir>/src/$1',
   },
   modulePathIgnorePatterns: [
     '<rootDir>/ecosystem-tests/',
