@@ -1,12 +1,12 @@
 {
   "name": "printful-api-client",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "The official TypeScript library for the Printful API",
   "author": "Printful <>",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "type": "commonjs",
-  "repository": "github:morgandoane/printful-client",
+  "repository": "github:morgandoane/printful-api-wrapper",
   "license": "Apache-2.0",
   "packageManager": "pnpm@10.27.0",
   "files": [
