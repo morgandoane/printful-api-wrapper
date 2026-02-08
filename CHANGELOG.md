@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1 (2026-02-08)
+
+Full Changelog: [v0.2.0...v0.2.1](https://github.com/morgandoane/printful-api-wrapper/compare/v0.2.0...v0.2.1)
+
+### Chores
+
+* update SDK settings ([2e9618c](https://github.com/morgandoane/printful-api-wrapper/commit/2e9618ca64e083857f0d212a6420bff0627e5f69))
+
 ## 0.2.0 (2026-02-08)
 
 Full Changelog: [v0.1.1...v0.2.0](https://github.com/morgandoane/printful-api-wrapper/compare/v0.1.1...v0.2.0)

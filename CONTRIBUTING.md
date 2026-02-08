@@ -55,12 +55,12 @@ $ cd printful-api-wrapper
 # With yarn
 $ yarn link
 $ cd ../my-package
-$ yarn link printful-api-client
+$ yarn link mdd-printful-client
 
 # With pnpm
 $ pnpm link --global
 $ cd ../my-package
-$ pnpm link -—global printful-api-client
+$ pnpm link -—global mdd-printful-client
 ```
 
 ## Running tests

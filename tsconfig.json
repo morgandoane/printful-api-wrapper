@@ -8,8 +8,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "paths": {
-      "printful-api-client/*": ["./src/*"],
-      "printful-api-client": ["./src/index.ts"]
+      "mdd-printful-client/*": ["./src/*"],
+      "mdd-printful-client": ["./src/index.ts"]
     },
     "noEmit": true,
 
