@@ -1,5 +1,5 @@
 {
-  "name": "printful-api-client",
+  "name": "mdd-printful-client",
   "version": "0.2.0",
   "description": "The official TypeScript library for the Printful API",
   "author": "Printful <>",

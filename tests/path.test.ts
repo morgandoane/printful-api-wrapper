@@ -1,4 +1,4 @@
-import { createPathTagFunction, encodeURIPath } from 'printful-api-client/internal/utils/path';
+import { createPathTagFunction, encodeURIPath } from 'mdd-printful-client/internal/utils/path';
 import { inspect } from 'node:util';
 import { runInNewContext } from 'node:vm';
 
