@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.2 (2026-02-12)
+
+Full Changelog: [v0.2.1...v0.2.2](https://github.com/morgandoane/printful-api-wrapper/compare/v0.2.1...v0.2.2)
+
+### Chores
+
+* **internal:** avoid type checking errors with ts-reset ([7449793](https://github.com/morgandoane/printful-api-wrapper/commit/74497939c2495f866a0998506e23001d70d8ed4b))
+
 ## 0.2.1 (2026-02-08)
 
 Full Changelog: [v0.2.0...v0.2.1](https://github.com/morgandoane/printful-api-wrapper/compare/v0.2.0...v0.2.1)
