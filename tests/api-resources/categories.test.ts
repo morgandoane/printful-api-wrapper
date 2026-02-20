@@ -8,7 +8,7 @@ const client = new Printful({
 });
 
 describe('resource categories', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve', async () => {
     const responsePromise = client.categories.retrieve(0);
     const rawResponse = await responsePromise.asResponse();
@@ -20,7 +20,7 @@ describe('resource categories', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list', async () => {
     const responsePromise = client.categories.list();
     const rawResponse = await responsePromise.asResponse();

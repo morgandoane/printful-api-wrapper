@@ -8,7 +8,7 @@ const client = new Printful({
 });
 
 describe('resource products', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve', async () => {
     const responsePromise = client.sync.products.retrieve(0);
     const rawResponse = await responsePromise.asResponse();
@@ -20,7 +20,7 @@ describe('resource products', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
@@ -32,7 +32,7 @@ describe('resource products', () => {
     ).rejects.toThrow(Printful.NotFoundError);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list', async () => {
     const responsePromise = client.sync.products.list();
     const rawResponse = await responsePromise.asResponse();
@@ -44,7 +44,7 @@ describe('resource products', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
@@ -61,7 +61,7 @@ describe('resource products', () => {
     ).rejects.toThrow(Printful.NotFoundError);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('delete', async () => {
     const responsePromise = client.sync.products.delete(0);
     const rawResponse = await responsePromise.asResponse();
@@ -73,7 +73,7 @@ describe('resource products', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('delete: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
