@@ -8,7 +8,7 @@ const client = new Printful({
 });
 
 describe('resource approvalSheets', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list', async () => {
     const responsePromise = client.approvalSheets.list();
     const rawResponse = await responsePromise.asResponse();
@@ -20,7 +20,7 @@ describe('resource approvalSheets', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
@@ -28,7 +28,7 @@ describe('resource approvalSheets', () => {
     ).rejects.toThrow(Printful.NotFoundError);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('approve: only required params', async () => {
     const responsePromise = client.approvalSheets.approve({
       confirm_hash: 'confirm_hash',
@@ -43,7 +43,7 @@ describe('resource approvalSheets', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('approve: required and optional params', async () => {
     const response = await client.approvalSheets.approve({
       confirm_hash: 'confirm_hash',
@@ -52,7 +52,7 @@ describe('resource approvalSheets', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('submitChanges: only required params', async () => {
     const responsePromise = client.approvalSheets.submitChanges({
       confirm_hash: 'confirm_hash',
@@ -68,7 +68,7 @@ describe('resource approvalSheets', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('submitChanges: required and optional params', async () => {
     const response = await client.approvalSheets.submitChanges({
       confirm_hash: 'confirm_hash',
