@@ -8,7 +8,7 @@ const client = new Printful({
 });
 
 describe('resource mockupGenerator', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('createTask', async () => {
     const responsePromise = client.mockupGenerator.createTask(0, {});
     const rawResponse = await responsePromise.asResponse();
@@ -20,7 +20,7 @@ describe('resource mockupGenerator', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrievePrintfiles', async () => {
     const responsePromise = client.mockupGenerator.retrievePrintfiles(0);
     const rawResponse = await responsePromise.asResponse();
@@ -32,7 +32,7 @@ describe('resource mockupGenerator', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrievePrintfiles: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
@@ -48,7 +48,7 @@ describe('resource mockupGenerator', () => {
     ).rejects.toThrow(Printful.NotFoundError);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieveTaskResult: only required params', async () => {
     const responsePromise = client.mockupGenerator.retrieveTaskResult({ task_key: 'task_key' });
     const rawResponse = await responsePromise.asResponse();
@@ -60,7 +60,7 @@ describe('resource mockupGenerator', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieveTaskResult: required and optional params', async () => {
     const response = await client.mockupGenerator.retrieveTaskResult({
       task_key: 'task_key',
@@ -68,7 +68,7 @@ describe('resource mockupGenerator', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieveTemplates', async () => {
     const responsePromise = client.mockupGenerator.retrieveTemplates(0);
     const rawResponse = await responsePromise.asResponse();
@@ -80,7 +80,7 @@ describe('resource mockupGenerator', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieveTemplates: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(

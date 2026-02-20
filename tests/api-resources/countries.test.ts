@@ -8,7 +8,7 @@ const client = new Printful({
 });
 
 describe('resource countries', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list', async () => {
     const responsePromise = client.countries.list();
     const rawResponse = await responsePromise.asResponse();
