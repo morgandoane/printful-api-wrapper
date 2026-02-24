@@ -60,7 +60,7 @@ $ yarn link mdd-printful-client
 # With pnpm
 $ pnpm link --global
 $ cd ../my-package
-$ pnpm link -—global mdd-printful-client
+$ pnpm link --global mdd-printful-client
 ```
 
 ## Running tests
