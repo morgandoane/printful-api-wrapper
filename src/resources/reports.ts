@@ -5,6 +5,9 @@ import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 
+/**
+ * The Reports API lets you retrieve reports like the statistics related to the orders fulfilled for your stores.
+ */
 export class Reports extends APIResource {
   /**
    * Returns statistics for specified report types.

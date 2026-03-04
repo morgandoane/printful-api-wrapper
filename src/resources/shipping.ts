@@ -5,6 +5,40 @@ import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 
+/**
+ * The Shipping rate API calculates the shipping rates for an order based on the recipient's location and the contents of
+ * the order.
+ *
+ * The returned shipping rate ID can be used to specify the shipping method when creating an order.
+ *
+ * See [Country/State Code API](#tag/CountryState-Code-API) for information about the Country codes.
+ *
+ * See [Catalog API](#tag/Catalog-API) for information about the Variant IDs.
+ *
+ * <div class="alert alert-info">
+ * <p><strong>Note:</strong> The shipping rates endpoints are meant to be called only right before placing an order to display
+ * available shipping rates and methods.</p>
+ *
+ * Dynamic shipping rates can change even in the span of one hour because it takes live facility and carrier information
+ * into account. Different rates may be calculated for different products, quantities and recipient data.
+ *
+ * Even daily downloads of this data, reused only for identical orders, can result in mismatches between the displayed
+ * rates and the charged rates, potentially resulting in customer dissatisfaction.
+ *
+ * A CSV file containing flat rates data for different categories of products may be downloaded
+ * from https://www.printful.com/shipping-rates-report/shipping-rates-report/download and hardcoded to reduce the shipping
+ * rate volume massively if you use flat rate shipping.
+ * </div>
+ *
+ * **Rate limiting:** The default rate limit is 120 requests per 60 seconds.
+ *
+ * <div class="alert alert-danger">
+ *   <strong>Warning:</strong> If the summary item quantity count exceeds 100 then the rate limit
+ * is changed to 5 requests per 60 seconds.
+ * </div>
+ *
+ * A 60 seconds lockout is applied if request count is exceeded.
+ */
 export class Shipping extends APIResource {
   /**
    * Returns available shipping options and rates for the given list of products.

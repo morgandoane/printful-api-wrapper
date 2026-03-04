@@ -7,6 +7,113 @@ import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
+/**
+ * **The Products API resource lets you create, modify and delete products in a Printful store based on the Manual orders /
+ * API platform** (you can create such store by going to the Stores section at your Printful dashboard.)
+ *
+ * **Important**: Jewelry products are not supported via API.
+ *
+ * <div class="alert alert-info" style="word-wrap: break-word; padding: 16px; border-radius: 0; cursor: default; color: #31708f; background-color: #d9edf7; border-color: #bce8f1;">
+ * To configure products and variants at a Printful store based on Shopify, WooCommerce or another supported integration platform, please see <a href="#tag/Ecommerce-Platform-Sync-API">Ecommerce Platform Sync API</a>.
+ * </div>
+ *
+ * To manage Warehouse products, please see <a href="#tag/Warehouse-Products-API">Warehouse Products API</a>.
+ *
+ * ### The basics
+ *
+ * Each product in your Printful store must contain one or multiple variants (imagine multiple sizes or colors of the same
+ * t-shirt design). Furthermore, for each variant, you have to specify both a blank product variant from our Printful
+ * Catalog and a print file. These two properties together with price and External ID (more on that later) will allow the
+ * variant to be purchasable. Please, see the following sections for more details. Finally, please note that for technical
+ * reasons a product in your Printful store is called a Sync Product and a variant of that product is called a Sync Variant. The maximum supported amount of Sync Variants a Sync Product can have is 100.
+ *
+ * ### Assigning a blank product variant
+ * Printful has a substantial catalog of blank products and variants, where each variant (e.g. size and color combination
+ * of a particular product) has a unique ID, which we call variant_id. You can browse through the catalog via Catalog API
+ * to find a specific variant_id. Moreover, when creating a Sync Product at your Printful store, each of its Sync Variants
+ * must be associated with a variant_id from the Printful Catalog. Furthermore, to assign a specific variant_id to a
+ * specific Sync Variant, simply add it to the HTTP request body (see examples at the specific endpoint).
+ *
+ * ### Assigning a single print file
+ * There are two ways to assign a print file to a Sync Variant. One is to specify the File ID if the file already exists in the File library of the authorized store;
+ *
+ * ### Limitations
+ *
+ * **Important**: The Products API is not intended and will never support creating and managing products in external platforms such as Shopify, WooCommerce and others. For managing your products from external platforms please refer to [Ecommerce Platform Sync API](#tag/Ecommerce-Platform-Sync-API)
+ *
+ * ```
+ * {
+ *     ...
+ *     "files": [
+ *         {
+ *             "id": 12345
+ *         }
+ *     ],
+ *     ...
+ * }
+ * ```
+ * The second and most convenient method is to specify the file URL. If a file with the same URL already exists, it will be reused.
+ *
+ * ```
+ * {
+ *     ...
+ *     "files": [
+ *         {
+ *             "url": "http://example.com/t-shirts/123/front.pdf"
+ *         }
+ *     ],
+ *     ...
+ * }
+ * ```
+ * Moreover, each Sync Variant has to be linked with one or multiple print files. The available file types for each product are available from the Printful Catalogue API. You can add one file for each type by specifying the type attribute. For the
+ * default type, this attribute can be skipped.
+ *
+ * ```
+ * ...
+ * "files":[
+ *     {
+ *         "type": "default",
+ *         "url": "http://example.com/t-shirts/123/front.pdf"
+ *     },
+ *     {
+ *         "type": "back"
+ *         "url": "http://example.com/t-shirts/123/back.pdf"
+ *     }
+ * ],
+ * ...
+ * ```
+ * Remember that using additional files can increase the price of the item.
+ *
+ * ### External ID
+ * When creating a Sync Product and/or Sync Variant you can specify an External ID, which you can then use as a reference when managing or even ordering the specific Sync Product or Sync Variant. In particular, when requesting a specific Sync Product
+ * and Sync Variant, you can use either the internal Printful ID or your External ID (prefixed with an @ symbol) at the request URL.
+ *
+ * ### Native inside label
+ * Printful previously allowed customers to upload a fully customized inside label. Since these labels had to contain specific information about fabric composition, manufacturing, etc. to meet the legal requirements, users usually encountered issues to
+ * get their labels printed.
+ *
+ * Inside labels are printed on the inside of the garment and require the removal of the original manufacturer's tag. They're only available for apparel with tear-away labels. An inside label must include the country of manufacturing origin, original
+ * garment size, and material information. To use our native label template you only need to upload a graphic (such as your brand's logo). The mandatory content will be generated and placed automatically.
+ *
+ * ```
+ * ...
+ * "files":[
+ *         {
+ *             "type": "label_inside",
+ *             "url": "http://example.com/logo/123/image.jpg",
+ *             "options": [{
+ *                 "id": "template_type",
+ *                 "value": "native"
+ *             }]
+ *         },
+ * ],
+ * ...
+ * ```
+ * Printful previously supported fully customized inside labels. These have now been deprecated. The ability to create orders with fully customized inside labels has been limited to only users who were actively using them in their stores before April
+ * 2020. This feature is no longer accessible to new users.
+ *
+ * [See examples](#tag/Examples/Products-API-examples)
+ */
 export class Products extends APIResource {
   /**
    * Creates a new Sync Product together with its Sync Variants
