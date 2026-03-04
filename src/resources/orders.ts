@@ -7,6 +7,595 @@ import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
+/**
+ * The Orders API is the most important part of the Printful API - it allows you to create new orders and confirm them for
+ * fulfillment.
+ *
+ * **Important**: Jewelry products are not supported via API.
+ *
+ * ### Order life cycle and statuses
+ *
+ * Each order will go through different states while being processed. The following order status types indicate those
+ * states:
+ *
+ * <table>
+ *     <tr>
+ *         <td><strong>draft</strong></td>
+ *         <td>The order is created but is not yet submitted for fulfillment. You still can edit it and confirm later.</td>
+ *     </tr>
+ *     <tr>
+ *         <td><strong>inreview</strong></td>
+ *         <td>The order is being reviewed. It's not possible to cancel the order at this point. It will be possible to cancel the order when the review process is finished.</td>
+ *     </tr>
+ *     <tr>
+ *         <td><strong>pending</strong></td>
+ *     <td>The order has been submitted for fulfillment, but is not yet accepted for fulfillment. You can still cancel the order if you need.</td>
+ *     </tr>
+ *     <tr>
+ *         <td><strong>failed</strong></td>
+ *         <td>Order was submitted for fulfillment but was returned for review because of an error (problem with address, missing printfiles, charging has failed, etc.).</td>
+ *     </tr>
+ *     <tr>
+ *         <td><strong>canceled</strong></td>
+ *         <td>The order has been canceled and can no longer be processed. If the order was charged then the amount has been returned to your credit card.</td>
+ *     </tr>
+ *     <tr>
+ *         <td><strong>inprocess</strong></td>
+ *         <td>The order is being fulfilled and can no longer be cancelled or modified. Contact customer support if there are any issues with the order at this point.</td>
+ *     </tr>
+ *     <tr>
+ *         <td><strong>onhold</strong></td>
+ *         <td>The order has encountered a problem during the fulfillment that needs to be resolved together with Printful customer service before fulfillment can continue.</td>
+ *     </tr>
+ *     <tr>
+ *         <td><strong>partial</strong></td>
+ *         <td>The order is partially fulfilled (some items are shipped already, the rest will follow)</td>
+ *     </tr>
+ *     <tr>
+ *         <td><strong>fulfilled</strong></td>
+ *         <td>All items have been shipped successfully</td>
+ *     </tr>
+ *     <tr>
+ *         <td><strong>archived</strong></td>
+ *         <td>The order has been archived and hidden from the UI</td>
+ *     </tr>
+ * </table>
+ *
+ * To sum up, the API allows you to create orders with status `draft` and then move them to state `pending` (both steps can
+ * be done with a single action). You are only charged for orders that have been confirmed. If the order encounters a
+ * problem after it has been submitted, then it is moved to the failed state so that the problem can be fixed and the order
+ * can be resubmitted.
+ *
+ * ### Asynchronous order cost calculation
+ *
+ * Most of the times, when you submit an order, we'll perform the cost calculation and return it in the response.
+ *
+ * However, we might not be able to calculate all the costs immediately, for example if the order contains a new advanced
+ * embroidery design. If that's the case, we'll automatically put your order on hold, calculate the order costs once it's
+ * possible, and then remove the order from hold.
+ *
+ * Such an order will return to a draft status (even if it was created with the auto-confirm option) and will need to be
+ * confirmed.
+ *
+ * You can subscribe to the `order_remove_hold` event (see [Webhook API](#tag/Webhook-API)) to be notified when the order is removed from hold.
+ *
+ * ### External ID
+ *
+ * External ID is an optional feature that allows you to link your Printful order with the Order ID from your system
+ * without the need to store additional data on your side. External ID can be up to 32 characters long and contain digits,
+ * Latin alphabet letters, dashes and underscores, however it is recommended to use integer numbers. Each order's External
+ * ID must be unique within the store.
+ *
+ * To use the External ID feature, you just add the `external_id` attribute when creating the order. Later, when you need
+ * to access the order through the API, you can reference it by both the Order ID and by External ID (if you prefix it with
+ * the `@` symbol).
+ *
+ * ```
+ * GET /orders/11001  - reference by Printful Order ID
+ * GET /orders/@988123  - reference by External ID
+ * GET /orders/@AA123123  - reference by External ID
+ * ```
+ *
+ * You can assign the `external_id` attribute to line items as well. In this case they have to be unique per order.
+ *
+ * ### Specifying products
+ *
+ * There are three general ways to specify a product’s variant when creating, updating or estimating an order:
+ *
+ * (A) **Using an existing product variant (sync variant) in your Printful store or warehouse.** To specify the existing
+ * product please use its `sync_variant_id` or `external_variant_id`, or `warehouse_product_variant_id`.
+ *
+ * [Example using Sync Variant ID](#tag/Examples/Orders-API-examples/Using-a-sync-variant)
+ * [Example using External Variant ID](#tag/Examples/Orders-API-examples/Using-sync-variant-with-external-ID)
+ *
+ * (B) **Using a Catalog API variant without adding a product to the store.** This method can be used when a Printful store
+ * has no products in it. To construct a variant on-the-fly retrieve a specific `variant_id` from the
+ * [Catalog API](#tag/Catalog-API) together with print files and an additional options.
+ *
+ * [Example](#tag/Examples/Orders-API-examples/Using-a-catalog-variant)
+ *
+ * (C) **Using an existing template ID.** This method can be used when a Printful store has assigned templates without the
+ * need to create products. To create an order please use the `product_template_id` and `variant_id` that will be added to
+ * the order.
+ *
+ * [Example](#tag/Examples/Orders-API-examples/Using-a-product-template)
+ *
+ * ### Adding print files
+ *
+ * There are two ways to assign a print file to the item. One is to specify the File ID if the file already exists in the
+ * file library of the authorized store:
+ *
+ * ```
+ * ...
+ * "files": [
+ *     {
+ *         "id": 12345
+ *     },
+ * ],
+ * ...
+ * ```
+ *
+ * The second and the most convenient method is to specify the file URL. If a file with the same URL already exists, it will be reused.
+ *
+ * ```
+ * ...
+ * "files": [
+ *     {
+ *         "url": "http://example.com/t-shirts/123/front.pdf"
+ *     },
+ * ],
+ * ...
+ * ```
+ *
+ * ### Specifying file position
+ *
+ * You can specify the image position inside the print area by providing a position object.
+ *
+ * <strong>Important</strong><br>
+ * * Each print area has specific dimensions, by default Orders API will assume that your file has to stick to those limitations and not exceed them. In some cases you would want to position your file outside the print area - to be able to do so use the `limit_to_print_area` and set it to: `false`.
+ * * `limit_to_print_area` determines if the image can cross the print area border. If `limit_to_print_area` is set to `true` then the request will result in `400 Bad Request` with "Invalid position" in `error.message` once the image crosses the print area borders. If `limit_to_print_area` is set to `false` then it will be possible to place image partially or fully outside the print area.
+ * * The (0,0) point is always located in top left corner of the print area.
+ *
+ * <strong>Steps</strong><br>
+ * 1.Retrieve printfile dimensions [Printfiles](#operation/getPrintfiles)
+ * ```
+ * ...
+ * "printfiles":
+ *     [
+ *         {
+ *             "printfile_id": 1,
+ *             "width": 1800,
+ *             "height": 2400,
+ *             "dpi": 150,
+ *             "fill_mode": "fit",
+ *             "can_rotate": false
+ *         }
+ *     ],
+ * ...
+ * ```
+ * 2.Specify file position for specific print placement while creating an order. Use `items` -> `files` -> `position` object as in the example:
+ * ```
+ * ...
+ * "items": [
+ *     {
+ *         "variant_id":4011,
+ *         "quantity":"1",
+ *         "files": [
+ *             {
+ *                 "type": "front",
+ *                 "url": "http://example.com/t-shirts/123/front.pdf",
+ *                 "position": {
+ *                     "area_width": 1800,
+ *                     "area_height": 2400,
+ *                     "width": 1800,
+ *                     "height": 1800,
+ *                     "top": 300,
+ *                     "left": 0,
+ *                     "limit_to_print_area": true
+ *                 }
+ *             }
+ *         ]
+ *     }
+ * ]
+ * ...
+ * ```
+ *
+ * #### Example of positioning the 450x450 image on the front placement
+ *
+ * <table>
+ *   <tr>
+ *     <td> Position </td>
+ *     <td> Mockup </td>
+ *     <td> Payload </td>
+ *   </tr>
+ *   <tr>
+ * <td> Top left </td>
+ * <td> <img alt="Top left mockup" src="images/position/top_left.png" width="300"/> </td>
+ * <td>
+ *
+ * ```
+ *   "position": {
+ *   "area_width": 1800,
+ *   "area_height": 2400,
+ *   "width": 450,
+ *   "height": 450,
+ *   "top": 0,
+ *   "left": 0,
+ *   "limit_to_print_area": true
+ *   }
+ * ```
+ *
+ * </td>
+ * </tr>
+ *
+ * <tr>
+ * <td> Top middle </td>
+ * <td> <img alt="Top left mockup" src="images/position/top_middle.png" width="300"/> </td>
+ * <td>
+ *
+ * ```
+ * "position": {
+ * "area_width": 1800,
+ * "area_height": 2400,
+ * "width": 450,
+ * "height": 450,
+ * "top": 0,
+ * "left": 675,
+ * "limit_to_print_area": true
+ * }
+ * ```
+ *
+ * </td>
+ * </tr>
+ *
+ * <tr>
+ * <td> Top right </td>
+ * <td> <img alt="Top left mockup" src="images/position/top_right.png" width="300"/> </td>
+ * <td>
+ *
+ * ```
+ * "position": {
+ * "area_width": 1800,
+ * "area_height": 2400,
+ * "width": 450,
+ * "height": 450,
+ * "top": 0,
+ * "left": 1350,
+ * "limit_to_print_area": true
+ * }
+ * ```
+ *
+ * </td>
+ * </tr>
+ *
+ * <tr>
+ * <td> Middle </td>
+ * <td> <img alt="Top left mockup" src="images/position/middle.png" width="300"/> </td>
+ * <td>
+ *
+ * ```
+ * "position": {
+ * "area_width": 1800,
+ * "area_height": 2400,
+ * "width": 450,
+ * "height": 450,
+ * "top": 975,
+ * "left": 675,
+ * "limit_to_print_area": true
+ * }
+ * ```
+ *
+ * </td>
+ * </tr>
+ *
+ * <tr>
+ * <td> Bottom left </td>
+ * <td> <img alt="Top left mockup" src="images/position/bottom_left.png" width="300"/> </td>
+ * <td>
+ *
+ * ```
+ * "position": {
+ * "area_width": 1800,
+ * "area_height": 2400,
+ * "width": 450,
+ * "height": 450,
+ * "top": 1950,
+ * "left": 0,
+ * "limit_to_print_area": true
+ * }
+ * ```
+ *
+ * </td>
+ * </tr>
+ *
+ * <tr>
+ * <td> Bottom middle </td>
+ * <td> <img alt="Top left mockup" src="images/position/bottom_middle.png" width="300"/> </td>
+ * <td>
+ *
+ * ```
+ * "position": {
+ * "area_width": 1800,
+ * "area_height": 2400,
+ * "width": 450,
+ * "height": 450,
+ * "top": 1950,
+ * "left": 675,
+ * "limit_to_print_area": true
+ * }
+ * ```
+ *
+ * </td>
+ * </tr>
+ *
+ * <tr>
+ * <td> Bottom right </td>
+ * <td> <img alt="Top left mockup" src="images/position/bottom_right.png" width="300"/> </td>
+ * <td>
+ *
+ * ```
+ * "position": {
+ * "area_width": 1800,
+ * "area_height": 2400,
+ * "width": 450,
+ * "height": 450,
+ * "top": 1950,
+ * "left": 1350,
+ * "limit_to_print_area": true
+ * }
+ * ```
+ *
+ * </td>
+ * </tr>
+ *
+ * </table>
+ *
+ * ### Specifying multiple files per item
+ *
+ * Each item in the order has to be linked with one or multiple files. The available file types for each product are
+ * available from the [Catalog API](#tag/Catalog-API).
+ *
+ * You can add one file for each type by specifying the `type` attribute. For the `default` type, this attribute can be
+ * skipped.
+ *
+ * ```
+ * ...
+ * "files":[
+ * 	{
+ * 		"type": "default",
+ * 		"url": "http://example.com/t-shirts/123/front.pdf"
+ * 	},
+ * 	{
+ * 		"type": "back"
+ * 		"url": "http://example.com/t-shirts/123/back.pdf"
+ * 	},
+ * 	{
+ * 		"type": "preview"
+ * 		"url": "http://example.com/t-shirts/123/preview.png"
+ * 	}
+ * ],
+ * ...
+ * ```
+ *
+ * Remember that using additional files can increase the price of the item.
+ *
+ * ### Creating orders from a template
+ *
+ * Orders API allows also creating orders based on the product template created in the Printful account without the need to
+ * add the product to the Printful store.
+ *
+ * To retrieve available templates for your account please use the
+ * [Products Templates API](#tag/Product-Templates-API).
+ *
+ * To create an order from a template you need to specify a variant or variants that will be added to the order. It is
+ * possible to use multiple templates with different variants in one request. To achieve that please use the `items` object
+ * below:
+ *
+ * ```
+ *     ...
+ *     "items": [
+ *         {
+ *             "variant_id": 4012,
+ *             "quantity": 1,
+ *             "product_template_id": 123456789
+ *         },
+ *         {
+ *             "variant_id": 1,
+ *             "quantity": 2,
+ *             "product_template_id": 11235813
+ *         },
+ *     ]
+ *     ...
+ * ```
+ *
+ * **Important note**: you can only create orders from templates for variant IDs from the Catalog API.
+ *
+ * More examples are available [here](#tag/Examples/Orders-API-examples/Using-a-product-template).
+ *
+ * ### Retail costs
+ *
+ * Printful allows you to specify your retail costs for the order so that the packing slip for international orders can
+ * contain your correct retail prices. To enable retail costs, each item in the order has to contain the `retail_price`
+ * attribute. You can also specify a custom discount sum, shipping costs and taxes in the `retail_costs` object when
+ * creating the order. If the retail costs are missing, the packing slip will contain the Printful prices instead.
+ *
+ * ### Native inside label
+ *
+ * Printful previously allowed customers to upload a fully customized inside label. Since these labels had to contain
+ * specific information about fabric composition, manufacturing, etc. to meet the legal requirements, users usually
+ * encountered issues to get their labels printed.
+ *
+ * Inside labels are printed on the inside of the garment and require the removal of the original manufacturer's tag.
+ * They're only available for apparel with tear-away labels. An inside label must include the country of manufacturing
+ * origin, original garment size, and material information. To use our native label template you only need to upload a
+ * graphic (such as your brand's logo). The mandatory content will be generated and placed automatically.
+ *
+ * ```
+ * ...
+ * "files":[
+ *         {
+ *             "type": "label_inside",
+ *             "url": "http://example.com/logo/123/image.jpg",
+ *             "options": [{
+ *                 "id": "template_type",
+ *                 "value": "native"
+ *             }]
+ *         },
+ * ],
+ * ...
+ * ```
+ *
+ * Printful previously supported fully customized inside labels. These have now been deprecated. The ability to create orders with fully customized inside labels has been limited to only users who were actively using them in their stores before April 2020. This feature is no longer accessible to new users.
+ *
+ * ### Ordering embroidery products
+ *
+ * Embroidery is a technique which uses colored threads, sewn into a product, to recreate provided design. In order to use embroidery technique you first need to check if selected product support embroidery technique.
+ *
+ * In order to do that you need to use [Catalog API](#tag/Catalog-API) to determine if the selected product or variant contains `EMBROIDERY` technique.
+ * ```
+ * "techniques": [
+ *                 {
+ *                     "key": "EMBROIDERY",
+ *                     "display_name": "Embroidery",
+ *                     "is_default": true
+ *                 }
+ *             ]
+ * ```
+ * After that you need to also get list of available embroidery placements. Those are listed under `file` property with `embroidery_` prefix. You can get list of all available placements in [Placements](#tag/Common/Placements).
+ *
+ * <details>
+ *     <summary>Example of file property</summary>
+ *
+ * ```
+ * "files": [
+ *                 {
+ *                     "id": "default",
+ *                     "type": "embroidery_front",
+ *                     "title": "Front",
+ *                     "additional_price": null
+ *                 },
+ *                 {
+ *                     "id": "back",
+ *                     "type": "embroidery_back",
+ *                     "title": "Back",
+ *                     "additional_price": "3.75"
+ *                 },
+ *                 {
+ *                     "id": "left",
+ *                     "type": "embroidery_left",
+ *                     "title": "Left side",
+ *                     "additional_price": "3.75"
+ *                 },
+ *                 {
+ *                     "id": "right",
+ *                     "type": "embroidery_right",
+ *                     "title": "Right side",
+ *                     "additional_price": "3.75"
+ *                 },
+ *                 {
+ *                     "id": "preview",
+ *                     "type": "mockup",
+ *                     "title": "Mockup",
+ *                     "additional_price": null
+ *                 }
+ *             ]
+ * ```
+ *
+ * </details>
+ *
+ * To create an order using embroidery technique you can:
+ *
+ * - Provide thread colors manually [See example](#tag/Common/Embroidery/Manually-defining-thread-colors)
+ * - Use automatic thread color detection [See example](#tag/Common/Embroidery/Automatic-thread-color)
+ *
+ * Finally, you can make an order using embroidery
+ * technique [See example](#tag/Examples/Orders-API-examples/Using-embroidery-products). Depending on the placement that you've
+ * used you need to specify the correct [thread color option](#tag/Common/Options).
+ *
+ * ### Packing slip
+ *
+ * The packing slip fields can be configured at the store level and overridden for a specific order.
+ *
+ * The packing slip settings can be found in Dashboard at **Settings > Stores > Branding > Packing slip section**.
+ *
+ * To override the packing slip settings for the order, you can use `packing_slip` or `gift` fields.
+ *
+ * Below you can find an example or a packing slip for a shipment with explained fields.
+ *
+ * ![packing slip](images/sample_packing_slip.png)
+ *
+ * Field annotations:
+ *
+ * * **(1)** Barcode unique for the shipment.
+ * * **(2)** Store logo defined in the store settings or overridden using `packing_slip.logo_url` field. The provided image is converted to a grayscale/1-bit monochrome image.
+ * * **(3)** The date of the shipment.
+ * * **(4)** Packing slip number consisting of order and shipment IDs in Printful database, divided with a hyphen.
+ * * **(5)** The country from which the shipment is made. If the recipient is in the United States, this field will be
+ *   absent.
+ * * **(6)** Recipient address with phone, without email address.
+ * * **(7)** Store name. This can be overridden using `packing_slip.store_name`.
+ * * **(8)** The address to which the shipment should be returned. By default it will be a Printful’s return address, but
+ *   you can set your own address in the store settings (**Settings > Stores > Returns > Return address section**).
+ * * **(9)** The customer service phone number defined in the store settings or overridden using `packing_slip.phone`
+ *   field.
+ * * **(10)** The customer service email address defined in the store settings or overridden using `packing_slip.email`
+ *   field.
+ * * **(11)** Gift message. This is only present if the `gift` field was provided in the order request.
+ * * **(12)** The order creation date.
+ * * **(13)** Printful Order ID which can be overridden using `packing_slip.custom_order_id` field.
+ * * **(14)** The list of order items with quantities. The items’ display names are localized, using the recipient’s
+ *   country and include variant information such as color and size e.g. „Unisex Staple T-Shirt | Bella + Canvas 3001 (
+ *   Lilac / M)”.
+ * * **(15)** The packing slip message defined in the store settings or overridden using `packing_slip.message` field.
+ *
+ * ### More Orders API examples
+ *
+ * See the [examples section](#tag/Examples/Orders-API-examples) for more sample requests on how Orders API can be used in
+ * different scenarios.
+ *
+ * ### Custom border color option
+ *
+ * Stickers can have a different border color which can be set by using the `thread_colors_outline` option.
+ * This option is available in `options` for stickers. To showcase the usage we will use the order flow
+ * which will create order with a sticker that will have a red border color:
+ *
+ * Endpoint `POST https://api.printful.com/orders`
+ * <details>
+ *     <summary>Request body</summary>
+ *
+ * ```
+ * {
+ *     "shipping": "STANDARD",
+ *     "recipient": {
+ *         "name": "John Smith",
+ *         "address1": "19749 Dearborn St",
+ *         "city": "Chatsworth",
+ *         "country_code": "US",
+ *         "state_code": "CA",
+ *         "zip": "91311"
+ *     },
+ *     "items": [
+ *         {
+ *             "variant_id": 10163,
+ *             "files": [
+ *                 {
+ *                     "type": "default",
+ *                     "url": "https://www.printful.com/static/images/layout/printful-logo.png"
+ *                 }
+ *             ],
+ *             "options": [
+ *                 {
+ *                     "id": "custom_border_color",
+ *                     "value": "#FF0000"
+ *                 }
+ *             ]
+ *         }
+ *     ]
+ * }
+ * ```
+ *
+ * </details>
+ */
 export class Orders extends APIResource {
   /**
    * Creates a new order and optionally submits it for fulfillment

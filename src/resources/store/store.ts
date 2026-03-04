@@ -33,6 +33,9 @@ import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
+/**
+ *
+ */
 export class Store extends APIResource {
   products: ProductsAPI.Products = new ProductsAPI.Products(this._client);
   variants: VariantsAPI.Variants = new VariantsAPI.Variants(this._client);

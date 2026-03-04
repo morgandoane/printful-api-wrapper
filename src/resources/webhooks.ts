@@ -5,6 +5,49 @@ import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 
+/**
+ * Webhooks are an API feature that allows your system to receive notifications about certain events.
+ *
+ * When an event occurs, the Printful server ([Webhook Simulator](https://www.printful.com/api/webhook-simulator))
+ * will make a POST request to your defined
+ * URL that will contain a JSON object in the request body.
+ * Your server has to respond with HTTP status `2xx OK`,
+ * otherwise, the request will be retried in increasing intervals
+ * (after 1, 4, 16, 64, 256 and 1024 minutes).
+ *
+ * The JSON object will always contain these attributes:
+ * <table>
+ *     <tr>
+ *         <td><strong>type</strong></td>
+ *         <td>string</td>
+ *         <td>Event type</td>
+ *     </tr>
+ *     <tr>
+ *         <td><strong>created</strong></td>
+ *         <td>timestamp</td>
+ *         <td>Event time</td>
+ *     </tr>
+ *     <tr>
+ *         <td><strong>retries</strong></td>
+ *         <td>integer</td>
+ *         <td>Number of previous attempts to deliver this webhook event</td>
+ *     </tr>
+ *     <tr>
+ *         <td><strong>store</strong></td>
+ *         <td>integer</td>
+ *         <td>ID of the store that the event occured to</td>
+ *     </tr>
+ *     <tr>
+ *         <td><strong>data</strong></td>
+ *         <td>Object</td>
+ *         <td>Additional data, depending on the event type</td>
+ *     </tr>
+ * </table>
+ *
+ * Please use [Webhook Simulator](https://www.printful.com/api/webhook-simulator) to test your webhook event receiver.
+ *
+ * To set up webhooks, use API requests described below:
+ */
 export class Webhooks extends APIResource {
   /**
    * Use this endpoint to enable a webhook URL for a store and select webhook event

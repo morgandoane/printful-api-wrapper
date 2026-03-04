@@ -7,6 +7,9 @@ import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
+/**
+ * Warehouse Products API
+ */
 export class Products extends APIResource {
   /**
    * Returns warehouse product data by ID
