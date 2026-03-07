@@ -153,12 +153,12 @@ export class Variants extends APIResource {
    * ```
    */
   update(
-    pathID: number | string,
+    id: number | string,
     params: VariantUpdateParams,
     options?: RequestOptions,
   ): APIPromise<VariantUpdateResponse> {
     const { 'X-PF-Store-Id': xPfStoreID, ...body } = params;
-    return this._client.put(path`/store/variants/${pathID}`, {
+    return this._client.put(path`/store/variants/${id}`, {
       body,
       ...options,
       headers: buildHeaders([
@@ -244,7 +244,7 @@ export interface VariantUpdateParams {
    * Body param: Sync Variant ID. Please specify the IDs of all Sync Variants you
    * wish to keep.
    */
-  body_id?: number;
+  id?: number;
 
   /**
    * Body param: Indicates the status of the Sync Variant.
