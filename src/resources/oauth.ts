@@ -4,6 +4,9 @@ import { APIResource } from '../core/resource';
 import { APIPromise } from '../core/api-promise';
 import { RequestOptions } from '../internal/request-options';
 
+/**
+ * OAuth API allows receiving data for token
+ */
 export class OAuth extends APIResource {
   /**
    * Returns a list of scopes associated with the token

@@ -8,7 +8,7 @@ const client = new Printful({
 });
 
 describe('resource tax', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('calculateRate: only required params', async () => {
     const responsePromise = client.tax.calculateRate({
       recipient: {
@@ -27,7 +27,7 @@ describe('resource tax', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('calculateRate: required and optional params', async () => {
     const response = await client.tax.calculateRate({
       recipient: {
@@ -39,7 +39,7 @@ describe('resource tax', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('listCountries', async () => {
     const responsePromise = client.tax.listCountries();
     const rawResponse = await responsePromise.asResponse();

@@ -8,7 +8,7 @@ const client = new Printful({
 });
 
 describe('resource oauth', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('listScopes', async () => {
     const responsePromise = client.oauth.listScopes();
     const rawResponse = await responsePromise.asResponse();

@@ -8,7 +8,7 @@ const client = new Printful({
 });
 
 describe('resource orders', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('create: only required params', async () => {
     const responsePromise = client.orders.create({
       items: [{}],
@@ -23,7 +23,7 @@ describe('resource orders', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('create: required and optional params', async () => {
     const response = await client.orders.create({
       items: [
@@ -122,7 +122,7 @@ describe('resource orders', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve', async () => {
     const responsePromise = client.orders.retrieve('string');
     const rawResponse = await responsePromise.asResponse();
@@ -134,7 +134,7 @@ describe('resource orders', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
@@ -146,7 +146,7 @@ describe('resource orders', () => {
     ).rejects.toThrow(Printful.NotFoundError);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('update: only required params', async () => {
     const responsePromise = client.orders.update('string', {
       items: [{}],
@@ -161,7 +161,7 @@ describe('resource orders', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('update: required and optional params', async () => {
     const response = await client.orders.update('string', {
       items: [
@@ -259,7 +259,7 @@ describe('resource orders', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list', async () => {
     const responsePromise = client.orders.list();
     const rawResponse = await responsePromise.asResponse();
@@ -271,7 +271,7 @@ describe('resource orders', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
@@ -286,7 +286,7 @@ describe('resource orders', () => {
     ).rejects.toThrow(Printful.NotFoundError);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('cancel', async () => {
     const responsePromise = client.orders.cancel('string');
     const rawResponse = await responsePromise.asResponse();
@@ -298,7 +298,7 @@ describe('resource orders', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('cancel: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
@@ -310,7 +310,7 @@ describe('resource orders', () => {
     ).rejects.toThrow(Printful.NotFoundError);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('confirm', async () => {
     const responsePromise = client.orders.confirm('string');
     const rawResponse = await responsePromise.asResponse();
@@ -322,7 +322,7 @@ describe('resource orders', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('confirm: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
@@ -334,7 +334,7 @@ describe('resource orders', () => {
     ).rejects.toThrow(Printful.NotFoundError);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('estimateCosts: only required params', async () => {
     const responsePromise = client.orders.estimateCosts({
       items: [{}],
@@ -349,7 +349,7 @@ describe('resource orders', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('estimateCosts: required and optional params', async () => {
     const response = await client.orders.estimateCosts({
       items: [

@@ -6,6 +6,20 @@ import { APIPromise } from '../core/api-promise';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
+/**
+ * The Product Templates API resource lets you retrieve the product templates information.
+ *
+ * ### External Product ID
+ *
+ * In case of a single template retrieval it is possible to get it by the External Product ID. In order to do this, the ID needs to be prepended with the '@' character. Here are the examples of how to get the template data by the Template ID and by the External Product ID.
+ *
+ * ```
+ * GET /product-templates/11001  - reference by Printful Template ID
+ * GET /product-templates/@988123  - reference by External ID
+ * ```
+ *
+ * [See examples](#tag/Product-Templates-API)
+ */
 export class ProductTemplates extends APIResource {
   /**
    * Get information about a single product template

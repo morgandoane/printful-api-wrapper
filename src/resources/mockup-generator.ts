@@ -7,6 +7,438 @@ import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
+/**
+ * To generate mockups, first, you need to decide on which products you want them. API methods on retrieving products and
+ * variants can be found in the [Catalog API](#tag/Catalog-API).
+ *
+ * **Note**: Remember to distinguish the difference between a product id and a variant id. Some API endpoints require an id
+ * from a variant and some from a product.
+ *
+ * **Important**: Jewelry products are not supported via API.
+ *
+ * ### Print files
+ *
+ * A print file defines resolution which should be used to create a mockup or to submit an actual order.
+ *
+ * Information about product variant print files can be retrieved from the [print file endpoint](#operation/getPrintfiles).
+ *
+ * For example, a 10×10 poster requires a 1500×1500 pixel print file to produce a 150 DPI print. You can use higher
+ * resolution files to achieve a better result, but keep the side aspect ratio the same as the defined for the print file.
+ * That means, if you use a 3000×3000 pixel file, it will produce a 300 DPI print. But if you use a 3000×1500 pixel file (
+ * different aspect ratio) on a 10×10 poster, some cropping will occur. Print file's `fill_mode` parameter defines if
+ * cropping will happen, or the file will be fitted on the resulting print area of the product.
+ *
+ * Some print files can be rotated. `can_rotate` field defines this feature. This mostly applies to wall art products and
+ * should be used if you want to generate a horizontal or a vertical product mockup.
+ *
+ * Wall art print files are defined horizontally. If you wish to create a vertical mockup, you can rotate the file's print
+ * file and the generated mockup will be in the given orientation. For example, 16×12 poster print file is 2400×1800 pixels
+ * which generate it horizontally. If you wish to get a vertical mockup, you create the print file as 1800×2400 pixels. The
+ * same strategy applies when you submit an order.
+ *
+ * Print files are often re-used for multiple variants and products. For example, a 14×14 poster uses the same print file
+ * as a framed poster. Most of the t-shirt front prints use the same print file too.
+ *
+ * **Note**: When you generate mockups there is no need to provide a full-sized print file. Mockups are generated up to
+ * 2000px wide, so you can downscale your print file to 2000px. This will reduce the processing time on your and Printful's
+ * side. Print file image file size limit: 50MB.
+ *
+ * ### Mockup generation
+ *
+ * Mockup generation requires some time, that is why it cannot happen in real-time.
+ *
+ * When you request a mockup to be generated, a task is created and you receive the task key which can then be used to
+ * retrieve the generated mockup list. We cannot guarantee that after a certain time the mockups will be generated, so you
+ * will have to check frequently if the task is done. The first request for a result should not be sooner than 10 seconds.
+ * So plan that the generation task will be done in two steps - creating a task and the checking with intervals if the task
+ * is ready.
+ *
+ * <div class="alert alert-info">
+ * <strong>Important</strong><br>
+ * URLs to mockup images are temporary, they will expire after 72h, so you have to store them on your
+ * server.
+ * </div>
+ *
+ * ### Process flow
+ *
+ * 1. Decide which product variants you want to generate.
+ *
+ * 2. Retrieve the list of print files for chosen product and variants. Use the variant print file mappings to determine
+ *    which print file you need to generate for specific placement on a specific product's variant.
+ *
+ * 3. Upload your file to a public URL that matches the print file size ratio (or provide positions for the generation
+ *    request)
+ *
+ * 4. Create a mockup generation task and store the task key.
+ *
+ * 5. Use the task key to check if the task is completed. If still pending, repeat after an interval.
+ *
+ * 6. When the task is done, download and store mockups on your server. Mockup URLs are temporary and will be removed after
+ *    a day.
+ *
+ * ### Available techniques
+ *
+ * The `/mockup-generator/printfiles/{id}` and `/mockup-generator/templates/{id}` endpoint accept `technique` parameter.
+ *
+ * The following table presents the available values of this parameter.
+ *
+ * | Value         | Description           |
+ * |---------------|-----------------------|
+ * | `DIGITAL`     | Digital printing      |
+ * | `CUT-SEW`     | Cut & sew sublimation |
+ * | `UV`          | UV printing           |
+ * | `EMBROIDERY`  | Embroidery            |
+ * | `SUBLIMATION` | Sublimation           |
+ * | `ENGRAVING`   | Engraving             |
+ * | `DTG`         | DTG printing          |
+ *
+ * ### Usage example
+ *
+ * Let's take an example. You want to offer users to design of their t-shirt.
+ *
+ * We'll pick this shirt as an example
+ * [Bella + Canvas 3001 Unisex T-shirt](https://www.printful.com/custom/mens/t-shirts/unisex-staple-t-shirt-bella-canvas-3001)
+ *
+ * Its product id is `71`.
+ *
+ * Let's fetch some variants available for this shirt:
+ * `https://api.printful.com/products/71`
+ *
+ * We'll choose a white and black shirt in M, L, XL sizes. Respective variant ids:
+ * `4012`, `4013`, `4014`, `4017`, `4018` and `4019`.
+ *
+ * Next, we need to get the print file sizes for these variants:
+ * `https://api.printful.com/mockup-generator/printfiles/71`
+ *
+ * We see that there are two placements available for this product - `front` and `back`. Posters, for example, will only
+ * have one placement called `default`.
+ *
+ * By looking up our picked variant ids, we see that they all use the same print file for back and front prints:
+ *
+ * ```json
+ * {
+ *   "product_id": 71,
+ *   "available_placements": {
+ *     "front": "Front print",
+ *     "back": "Back print",
+ *     "label_outside": "Outside label"
+ *   },
+ *   "printfiles": [
+ *     {
+ *       "printfile_id": 1,
+ *       "width": 1800,
+ *       "height": 2400,
+ *       "dpi": 150,
+ *       "fill_mode": "fit",
+ *       "can_rotate": false
+ *     }
+ *   ],
+ *   "variant_printfiles": [
+ *     {
+ *       "variant_id": 4012,
+ *       "placements": {
+ *         "front": 1,
+ *         "back": 1
+ *       }
+ *     }
+ *   ]
+ * }
+ * ```
+ *
+ * - `dpi` For given width and height, this is the resulting DPI on the actual product.
+ *
+ * - `fill_mode` Possible values: "fit" or "cover". Indicates in what mode mockups will be generated.
+ *
+ * - `can_rotate` Posters, for example, allow rotation. If you pass the image in horizontal positions.
+ *
+ * - `placements.front` Printfile id.
+ *
+ * We can see that the full print file size is 1800×2400 for back and front prints for chosen variants.
+ *
+ * When we know the size of the print file, we need to calculate the positions. Position values are relative here, image
+ * size does not have to match the width and height of positions. When mockup is generated we will fit the position area
+ * inside the print area or will cover it, depending on the print file `fill_mode` value.
+ *
+ * Positions given below would result in a square image centered vertically within the print area.
+ *
+ * ```json
+ * {
+ *   "area_width": 1800,
+ *   "area_height": 2400,
+ *   "width": 1800,
+ *   "height": 1800,
+ *   "top": 300,
+ *   "left": 0
+ * }
+ * ```
+ *
+ * - `area_width` Relative width of the print area.
+ *
+ * - `area_height` Relative height of the print area.
+ *
+ * - `width` Relative width of your image.
+ *
+ * - `height` Relative height of your image.
+ *
+ * - `top` Relative image top offset within the area.
+ *
+ * - `left` Relative image left offset within the area.
+ *
+ * <div class="alert alert-info">
+ * <strong>Important</strong><br>
+ * For posters, canvas, and other products which print files allow rotation (<code>can_rotate</code> value in <a href="#operation/getPrintfiles">print file response</a>) you
+ * can flip width and height to create a product mockup that is horizontal or vertical.
+ * </div>
+ *
+ * Once we have calculated the positions, we can perform the actual mockup generation using
+ * the [mockup generator endpoint](#operation/createGeneratorTask):
+ * `POST` to `https://api.printful.com/mockup-generator/create-task/71` with body parameters:
+ *
+ * ```json
+ * {
+ *   "variant_ids": [
+ *     4012,
+ *     4013,
+ *     4014,
+ *     4017,
+ *     4018,
+ *     4019
+ *   ],
+ *   "format": "jpg",
+ *   "files": [
+ *     {
+ *       "placement": "front",
+ *       "image_url": "http://your-site/path-to-front-printfile.jpg",
+ *       "position": {
+ *         "area_width": 1800,
+ *         "area_height": 2400,
+ *         "width": 1800,
+ *         "height": 1800,
+ *         "top": 300,
+ *         "left": 0
+ *       }
+ *     },
+ *     {
+ *       "placement": "back",
+ *       "image_url": "http://your-site/path-to-back-printfile.jpg",
+ *       "position": {
+ *         "area_width": 1800,
+ *         "area_height": 2400,
+ *         "width": 1800,
+ *         "height": 1800,
+ *         "top": 300,
+ *         "left": 0
+ *       }
+ *     }
+ *   ]
+ * }
+ * ```
+ *
+ * In response, you will receive the task key and current task status:
+ *
+ * ```json
+ * {
+ *   "task_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+ *   "status": "pending"
+ * }
+ * ```
+ *
+ * After an interval of a few seconds, you can try to check for the result by calling a `GET` request
+ * on `https://api.printful.com/mockup-generator/task?task_key=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
+ * If the task is completed, the response will be like this:
+ *
+ * ```json
+ * {
+ *   "task_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+ *   "status": "completed",
+ *   "mockups": [
+ *     {
+ *       "variant_ids": [
+ *         4011,
+ *         4012,
+ *         4013
+ *       ],
+ *       "placement": "front",
+ *       "mockup_url": "https://url-to/front-mockup.png"
+ *     },
+ *     {
+ *       "variant_ids": [
+ *         4011,
+ *         4012,
+ *         4013
+ *       ],
+ *       "placement": "back",
+ *       "mockup_url": "https://url-to/back-mockup.png"
+ *     },
+ *     {
+ *       "variant_ids": [
+ *         4016,
+ *         4017,
+ *         4018
+ *       ],
+ *       "placement": "front",
+ *       "mockup_url": "https://url-to/front-mockup.png"
+ *     },
+ *     {
+ *       "variant_ids": [
+ *         4016,
+ *         4017,
+ *         4018
+ *       ],
+ *       "placement": "back",
+ *       "mockup_url": "https://url-to/back-mockup.png"
+ *     }
+ *   ]
+ * }
+ * ```
+ *
+ * At this point, you just have to download the mockup URLs and store them on your server and you're good to go!
+ *
+ * ### Layout templates
+ *
+ * If you wish to build your mockup generator UI, this is the place to start. Using
+ * the [layout template endpoint](#operation/getPrintfiles)
+ * you can get template images and positions necessary to create a tool where your users can position their files on.
+ *
+ * If you want to create a mug generator, for example, you call the endpoint `/mockup-generator/templates/19` with mug
+ * product ID. By looking at the variant mapping field, we can determine that for variant `1320` 11oz mug we have to use
+ * the template with ID `919`. This is what template structure looks like:
+ *
+ * ```json
+ * {
+ *   "template_id": 919,
+ *   "image_url": "https://www.printful.com/files/generator/40/11oz_template.png",
+ *   "background_url": null,
+ *   "background_color": null,
+ *   "printfile_id": 43,
+ *   "template_width": 560,
+ *   "template_height": 295,
+ *   "print_area_width": 520,
+ *   "print_area_height": 202,
+ *   "print_area_top": 18,
+ *   "print_area_left": 20,
+ *   "is_template_on_front": true
+ * }
+ * ```
+ *
+ * - `printfile_id` We can retrieve the actual printfile size from the printfiles endpoint.
+ *
+ * - `template_width` This is the main container width, pixels.
+ *
+ * - `template_height` Main container height.
+ *
+ * - `print_area_width` Inner area where positioning happens.
+ *
+ * - `print_area_height` Inner area.
+ *
+ * - `print_area_top` Offset from the main container.
+ *
+ * - `print_area_left` Offset from the main container.
+ *
+ * - `is_template_on_front` This indicates if we should show the user image below or above the template image.
+ *
+ * Given this information, we can create a simple HTML markup:
+ *
+ * ```html
+ *
+ * <div style="position: relative; width: 520px; height: 295px;">
+ *     <div style="position: absolute; width: 520px; height: 202px; top:18px; left:20px; background:rgba(255,233,230,0.33)">
+ *         <img alt="Printful logo" src="https://printful.com/static/images/layout/logo-printful.png"
+ *              style="position: absolute; left: 43px; top: 77px; width: 140px; height: 63px;">
+ *     </div>
+ *     <div style="position: absolute; width: 560px; height: 295px; background:url(/files/generator/40/11oz_template.png) center center no-repeat"></div>
+ * </div>
+ * ```
+ *
+ * Which would look like this in the browser:
+ *
+ * <div style="position: relative; width: 520px; height: 295px;">
+ *     <div style="position: absolute; width: 520px; height: 202px; top:18px; left:20px; background:rgba(255,233,230,0.33)">
+ *         <img src="https://printful.com/static/images/layout/logo-printful.png" alt="Printful logo"
+ *              style="position: absolute; left: 43px; top: 77px; width: 140px; height: 63px;">
+ *     </div>
+ *     <div style="position: absolute; width: 560px; height: 295px; background:url(/files/generator/40/11oz_template.png) center center no-repeat"></div>
+ * </div>
+ *
+ * To generate mockups with positions above, we perform a `POST` request
+ * to `https://api.printful.com/mockup-generator/create-task/19` with body parameters:
+ *
+ * ```json
+ * {
+ *   "variant_ids": [
+ *     1320
+ *   ],
+ *   "format": "jpg",
+ *   "files": [
+ *     {
+ *       "placement": "default",
+ *       "image_url": "https://www.printful.test/static/images/layout/logo-printful.png",
+ *       "position": {
+ *         "area_width": 520,
+ *         "area_height": 202,
+ *         "width": 140,
+ *         "height": 63,
+ *         "top": 77,
+ *         "left": 43
+ *       }
+ *     }
+ *   ]
+ * }
+ * ```
+ *
+ * - `area_width` Value of print_area_width in the template.
+ * - `area_height` Value of print_area_height in the template.
+ * - `width` Image width.
+ * - `height` Image height.
+ * - `top` Image top offset in area.
+ * - `left` Image left offset in area.
+ *
+ *
+ * ### Choosing mockup styles
+ *
+ * To choose which mockup styles to generate, you have to specify `options` and `option_groups` parameters in the request. If these parameters are not present in the request, the system will generate the first available mockup. If you are not planning to utilize all available mockups, it is advised to limit the requested mockups. Not limiting requested mockups will cause bigger task processing times and overall resource waste.
+ *
+ * To find available `options` and `option_groups` for a given product, you have to use `/mockup-generator/printfiles/{id}` endpoint and search for `options` and `option_groups` fields in the response. See examples below.
+ *
+ * ```
+ * {
+ *     "variant_ids": [4021],
+ *     "format": "png",
+ *     "option_groups": ["Flat"],
+ *     "options": ["Front"],
+ *     "files": [
+ *         {
+ *             "placement": "front",
+ *             "image_url": "https://www.printful.com/static/images/layout/logo-printful.png"
+ *         }
+ *     ]
+ * }
+ * ```
+ *
+ * ### Using lifelike effect
+ *
+ * Lifelike is a feature that simulates how dark designs will look over dark colour products and is only used in mockup generation. For that, an extra file with special effect is created for each placement.
+ *
+ * ```
+ * {
+ *     "variant_ids": [4018],
+ *     "format": "png",
+ *     "product_options": {
+ *       "lifelike": true
+ *     },
+ *     "files": [
+ *         {
+ *             "placement": "front",
+ *             "image_url": "https://www.printful.com/static/images/layout/logo-printful.png"
+ *         }
+ *     ]
+ * }
+ * ```
+ *
+ * | Mockup without lifelike                        | Mockup with lifelike                        |
+ * |------------------------------------------------|---------------------------------------------|
+ * | ![Image](images/lifelike/without_lifelike.png) | ![Image](images/lifelike/with_lifelike.png) |
+ */
 export class MockupGenerator extends APIResource {
   /**
    * Creates an asynchronous mockup generation task. Generation result can be

@@ -8,7 +8,7 @@ const client = new Printful({
 });
 
 describe('resource shipping', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('calculateRates: only required params', async () => {
     const responsePromise = client.shipping.calculateRates({
       items: [{ quantity: 10 }],
@@ -23,7 +23,7 @@ describe('resource shipping', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('calculateRates: required and optional params', async () => {
     const response = await client.shipping.calculateRates({
       items: [

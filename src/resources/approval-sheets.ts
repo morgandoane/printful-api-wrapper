@@ -5,6 +5,9 @@ import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 
+/**
+ * Approval Sheets API
+ */
 export class ApprovalSheets extends APIResource {
   /**
    * Retrieve a list of approval sheets confirming suggested changes to files of on

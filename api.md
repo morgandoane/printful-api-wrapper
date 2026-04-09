@@ -291,5 +291,5 @@ Types:
 Methods:
 
 - <code title="get /store/variants/{id}">client.store.variants.<a href="./src/resources/store/variants.ts">retrieve</a>(id, { ...params }) -> VariantRetrieveResponse</code>
-- <code title="put /store/variants/{id}">client.store.variants.<a href="./src/resources/store/variants.ts">update</a>(pathID, { ...params }) -> VariantUpdateResponse</code>
+- <code title="put /store/variants/{id}">client.store.variants.<a href="./src/resources/store/variants.ts">update</a>(id, { ...params }) -> VariantUpdateResponse</code>
 - <code title="delete /store/variants/{id}">client.store.variants.<a href="./src/resources/store/variants.ts">delete</a>(id, { ...params }) -> VariantDeleteResponse</code>

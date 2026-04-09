@@ -8,7 +8,7 @@ const client = new Printful({
 });
 
 describe('resource reports', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieveStatistics: only required params', async () => {
     const responsePromise = client.reports.retrieveStatistics({
       date_from: '2022-08-01',
@@ -24,7 +24,7 @@ describe('resource reports', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieveStatistics: required and optional params', async () => {
     const response = await client.reports.retrieveStatistics({
       date_from: '2022-08-01',

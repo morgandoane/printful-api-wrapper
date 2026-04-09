@@ -4,6 +4,15 @@ import { APIResource } from '../core/resource';
 import { APIPromise } from '../core/api-promise';
 import { RequestOptions } from '../internal/request-options';
 
+/**
+ * To create an order, you have to use country and state codes to specify the recipient address. Both country code and state code are mandatory for orders to the USA, Canada and Australia. For other countries only the country code is needed to create an order.
+ *
+ * Country codes are based on the ISO 3166-1 alpha-2 standard and are two letters long.
+ *
+ * State codes are based on the ISO 3166-2 standard by omitting the country code part of the code and are used only for the USA, Canada, Japan and Australia.
+ *
+ * All state/country codes that Printful accepts can be listed by this API.
+ */
 export class Countries extends APIResource {
   /**
    * Returns list of countries and states that are accepted by the Printful.
